@@ -7,6 +7,7 @@ import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.devarthur4718.searchaddressapp.databinding.ItemAddressBinding
 import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.model.LocalAddress
+import com.devarthur4718.searchaddressapp.unaccent
 
 open class LocalAddressListAdapter :
     RecyclerView.Adapter<LocalAddressListAdapter.AddressListViewHolder>(), Filterable {
@@ -52,7 +53,7 @@ open class LocalAddressListAdapter :
                 } else {
                     val filteredList = mutableListOf<LocalAddress>()
                     addressList.filter {
-                        it.localName.contains(
+                        it.localName.unaccent().contains(
                             constraint!!,
                             ignoreCase = true
                         ) or it.postalCode.contains(
