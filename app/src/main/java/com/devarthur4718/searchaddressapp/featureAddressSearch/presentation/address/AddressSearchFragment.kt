@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -45,6 +46,9 @@ class AddressSearchFragment : Fragment() {
                 is AddressState.onRemoteAddressFileReceived -> {
                     hideProgress()
                     saveFileToDisk(state.data)
+                }
+                is AddressState.Error -> {
+                    Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
