@@ -48,6 +48,7 @@ class AddressSearchFragment : Fragment() {
                     saveFileToDisk(state.data)
                 }
                 is AddressState.Error -> {
+                    hideProgress()
                     Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
                 }
             }
