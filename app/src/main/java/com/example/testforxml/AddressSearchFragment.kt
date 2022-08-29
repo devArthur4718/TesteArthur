@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.example.testforxml.databinding.FragmentFirstBinding
+import com.example.testforxml.feature_address_search.domain.model.LocalAddress
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback

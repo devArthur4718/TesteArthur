@@ -1,12 +1,12 @@
 package com.example.testforxml
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.example.testforxml.databinding.ItemAddressBinding
+import com.example.testforxml.feature_address_search.domain.model.LocalAddress
 
 open class AddressListAdapter :
     RecyclerView.Adapter<AddressListAdapter.AddressListViewHolder>(), Filterable {
