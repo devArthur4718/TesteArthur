@@ -9,7 +9,7 @@ import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
-class GetRemoteAddresses @Inject constructor(
+class GetRemoteAddressesUseCase @Inject constructor(
     private val repository: GithubRepository
 ) {
     operator fun invoke(): Flow<Resource<ResponseBody>> = flow {
@@ -18,7 +18,9 @@ class GetRemoteAddresses @Inject constructor(
             val addressFile = repository.getAddresesFromRemote()
             emit(Resource.Success(addressFile))
         } catch (e: HttpException) {
+            emit(Resource.Error(e.localizedMessage ?: "An unexpected error occured"))
         } catch (e: IOException) {
+            emit(Resource.Error("Could not reach server. Check your connection."))
         }
     }
 }

@@ -11,7 +11,7 @@ import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.model.Loca
 abstract class LocalAddressDatabase : RoomDatabase() {
     abstract val localAddressDao: LocalAddressDao
 
-    companion object{
+    companion object {
         const val DATABASE_NAME = "address_db"
     }
 }

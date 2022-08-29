@@ -1,4 +1,4 @@
-package com.devarthur4718.searchaddressapp.featureAddressSearch.presentation.Address
+package com.devarthur4718.searchaddressapp.featureAddressSearch.presentation.address
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -52,7 +52,10 @@ open class LocalAddressListAdapter :
                 } else {
                     val filteredList = mutableListOf<LocalAddress>()
                     addressList.filter {
-                        it.localName.contains(constraint!!) or it.postalCode.contains(
+                        it.localName.contains(
+                            constraint!!,
+                            ignoreCase = true
+                        ) or it.postalCode.contains(
                             constraint!!
                         )
                     }

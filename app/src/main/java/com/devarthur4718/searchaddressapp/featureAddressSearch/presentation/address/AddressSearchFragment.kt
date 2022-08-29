@@ -1,4 +1,4 @@
-package com.devarthur4718.searchaddressapp.featureAddressSearch.presentation.Address
+package com.devarthur4718.searchaddressapp.featureAddressSearch.presentation.address
 
 import android.content.Context
 import android.os.Bundle
@@ -9,16 +9,19 @@ import android.widget.SearchView
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.devarthur4718.searchaddressapp.capitalizeAllWords
 import com.devarthur4718.searchaddressapp.databinding.FragmentSearchAddressBinding
-import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.model.LocalAddress
 import com.devarthur4718.searchaddressapp.featureAddressSearch.data.remote.GitHubApi
+import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.model.LocalAddress
+import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
 
+@AndroidEntryPoint
 class AddressSearchFragment : Fragment() {
 
     private var transformedList: MutableList<LocalAddress> = mutableListOf()
@@ -27,6 +30,7 @@ class AddressSearchFragment : Fragment() {
     }
     private var _binding: FragmentSearchAddressBinding? = null
     private val binding get() = _binding!!
+    private val viewModel by viewModels<AddressesViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,11 +43,18 @@ class AddressSearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (!isAddressFilePresent()) {
-            downloadFile()
-        } else {
-            createAdapterAndShowList()
+        viewModel.addressesState().observe(viewLifecycleOwner) { state ->
+            if (state == null) return@observe
+            when (state) {
+                is AddressState.Loading -> showProgress()
+                is AddressState.onRemoteAddressFileReceived -> {
+                    hideProgress()
+                    saveFileToDisk(state.data)
+                }
+            }
         }
+
+        viewModel.getAddressFromRemoteAndSaveLocally()
 
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -56,6 +67,14 @@ class AddressSearchFragment : Fragment() {
                 return true
             }
         })
+    }
+
+    private fun showProgress() {
+        binding.progressBar.isVisible = true
+    }
+
+    private fun hideProgress() {
+        binding.progressBar.isVisible = false
     }
 
     private fun mapFileDataIntoObjectList(file: File): MutableList<LocalAddress> {
