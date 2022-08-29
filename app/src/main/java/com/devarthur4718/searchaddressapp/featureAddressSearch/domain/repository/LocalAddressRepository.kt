@@ -6,4 +6,6 @@ import kotlinx.coroutines.flow.Flow
 interface LocalAddressRepository {
 
     fun getAllAddress(): Flow<List<LocalAddress>>
+
+    suspend fun searchAddress(querry: String): List<LocalAddress>
 }

@@ -1,8 +1,8 @@
 package com.devarthur4718.searchaddressapp.di
 
 import com.devarthur4718.searchaddressapp.featureAddressSearch.data.remote.GitHubApi
-import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.repository.GithubRepository
-import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.repository.GithubRepositoryImpl
+import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.repository.RemoteAddressRepository
+import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.repository.RemoteAddressRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -43,7 +43,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideGitHubRepository(api: GitHubApi): GithubRepository {
-        return GithubRepositoryImpl(api)
+    fun provideGitHubRepository(api: GitHubApi): RemoteAddressRepository {
+        return RemoteAddressRepositoryImpl(api)
     }
 }

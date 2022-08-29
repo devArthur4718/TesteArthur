@@ -9,4 +9,8 @@ class LocalAddressRepositoryImpl(private val dao: LocalAddressDao) : LocalAddres
     override fun getAllAddress(): Flow<List<LocalAddress>> {
         return dao.getAllAddress()
     }
+
+    override suspend fun searchAddress(querry: String): List<LocalAddress> {
+        TODO("Not yet implemented")
+    }
 }

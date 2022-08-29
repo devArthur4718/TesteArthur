@@ -6,19 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.devarthur4718.searchaddressapp.capitalizeAllWords
 import com.devarthur4718.searchaddressapp.databinding.FragmentSearchAddressBinding
-import com.devarthur4718.searchaddressapp.featureAddressSearch.data.remote.GitHubApi
 import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.model.LocalAddress
 import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.io.File
 
 @AndroidEntryPoint
@@ -65,6 +60,10 @@ class AddressSearchFragment : Fragment() {
                 return true
             }
         })
+
+        if (!isAddressFilePresent()) {
+            viewModel.getAddressFromRemoteAndSaveLocally()
+        }
     }
 
     private fun showProgress() {
@@ -93,30 +92,6 @@ class AddressSearchFragment : Fragment() {
 
     private fun isAddressFilePresent(): Boolean {
         return requireContext().fileList().contains(FILE_NAME)
-    }
-
-    private fun downloadFile() {
-        val apiInterface = GitHubApi.create().getCodigosPostais()
-        binding.progressBar.isVisible = true
-        apiInterface.enqueue(object : Callback<ResponseBody> {
-            override fun onResponse(
-                call: Call<ResponseBody>?,
-                response: Response<ResponseBody>?
-            ) {
-                response?.run {
-                    if (response.isSuccessful) {
-                        this.body()?.run { saveFileToDisk(this) }
-                    }
-                }
-                binding.progressBar.isVisible = false
-            }
-
-            override fun onFailure(call: Call<ResponseBody>?, t: Throwable?) {
-                Toast.makeText(requireContext(), "Error : $t", Toast.LENGTH_SHORT)
-                    .show()
-                binding.progressBar.isVisible = false
-            }
-        })
     }
 
     private fun saveFileToDisk(body: ResponseBody) {

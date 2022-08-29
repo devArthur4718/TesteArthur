@@ -2,7 +2,7 @@ package com.devarthur4718.searchaddressapp.featureAddressSearch.domain.repositor
 
 import okhttp3.ResponseBody
 
-interface GithubRepository {
+interface RemoteAddressRepository {
 
     suspend fun getAddresesFromRemote(): ResponseBody
 }

@@ -1,7 +1,7 @@
 package com.devarthur4718.searchaddressapp.featureAddressSearch.domain.useCase
 
 import com.devarthur4718.searchaddressapp.core.Resource
-import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.repository.GithubRepository
+import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.repository.RemoteAddressRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okhttp3.ResponseBody
@@ -10,7 +10,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 class GetRemoteAddressesUseCase @Inject constructor(
-    private val repository: GithubRepository
+    private val repository: RemoteAddressRepository
 ) {
     operator fun invoke(): Flow<Resource<ResponseBody>> = flow {
         try {

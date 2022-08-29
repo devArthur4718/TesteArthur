@@ -8,5 +8,5 @@ class LocalAddress(
     val localName: String,
     val postalCode: String,
     @PrimaryKey(autoGenerate = true)
-    val id: Int
+    val id: Int = 0
 )

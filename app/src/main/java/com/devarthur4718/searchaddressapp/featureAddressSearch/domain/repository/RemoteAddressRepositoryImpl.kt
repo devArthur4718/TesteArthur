@@ -4,9 +4,9 @@ import com.devarthur4718.searchaddressapp.featureAddressSearch.data.remote.GitHu
 import okhttp3.ResponseBody
 import javax.inject.Inject
 
-class GithubRepositoryImpl @Inject constructor(
+class RemoteAddressRepositoryImpl @Inject constructor(
     private val api: GitHubApi
-) : GithubRepository {
+) : RemoteAddressRepository {
 
     override suspend fun getAddresesFromRemote(): ResponseBody {
         return api.getPostalCodes()
