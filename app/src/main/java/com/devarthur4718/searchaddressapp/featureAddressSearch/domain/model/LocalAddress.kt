@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 @Entity
 class LocalAddress(
     val localName: String,
-    @PrimaryKey
-    val postalCode: String
+    val postalCode: String,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int
 )

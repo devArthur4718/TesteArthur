@@ -19,7 +19,11 @@ class AddressesViewModel @Inject constructor(
     private val _addressesState = MutableLiveData<AddressState>()
     fun addressesState(): LiveData<AddressState> = _addressesState
 
-    fun getAddressFromRemoteAndSaveLocally() {
+    init {
+        getAddressFromRemoteAndSaveLocally()
+    }
+
+    private fun getAddressFromRemoteAndSaveLocally() {
         remoteAddressesUseCase().onEach { result ->
             when (result) {
                 is Resource.Loading -> {

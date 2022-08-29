@@ -6,7 +6,7 @@ import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.model.Loca
 
 @Database(
     entities = [LocalAddress::class],
-    version = 1
+    version = 2
 )
 abstract class LocalAddressDatabase : RoomDatabase() {
     abstract val localAddressDao: LocalAddressDao

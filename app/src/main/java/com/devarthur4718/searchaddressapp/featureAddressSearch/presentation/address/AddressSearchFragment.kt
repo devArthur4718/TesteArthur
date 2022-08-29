@@ -54,8 +54,6 @@ class AddressSearchFragment : Fragment() {
             }
         }
 
-        viewModel.getAddressFromRemoteAndSaveLocally()
-
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 localAddressAdapter.filter.filter(query)
