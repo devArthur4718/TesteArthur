@@ -1,15 +1,18 @@
 package com.example.testforxml
 
-import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
+import android.widget.Filter
+import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.example.testforxml.databinding.ItemAddressBinding
 
-class AddressListAdapter :
-    ListAdapter<Address, AddressListAdapter.AddressListViewHolder>(DIFF_CALLBACK) {
+open class AddressListAdapter :
+    RecyclerView.Adapter<AddressListAdapter.AddressListViewHolder>(), Filterable {
+
+    var addressList = mutableListOf<LocalAddress>()
+    var addressListFiltered = mutableListOf<LocalAddress>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddressListViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -17,13 +20,13 @@ class AddressListAdapter :
     }
 
     override fun onBindViewHolder(holder: AddressListViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(addressListFiltered[position])
     }
 
     inner class AddressListViewHolder(
         private val itemBinding: ItemAddressBinding
     ) : RecyclerView.ViewHolder(itemBinding.root) {
-        fun bind(data: Address) {
+        fun bind(data: LocalAddress) {
             itemBinding.run {
                 tvAddressName.text = data.localName
                 tvPostalCode.text = data.postalCode
@@ -31,15 +34,41 @@ class AddressListAdapter :
         }
     }
 
-    companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Address>() {
-            override fun areItemsTheSame(oldItem: Address, newItem: Address): Boolean {
-                return oldItem.postalCode == newItem.postalCode
+    fun addData(list: MutableList<LocalAddress>) {
+        addressList = list
+        addressListFiltered = addressList
+        notifyDataSetChanged()
+    }
+
+    override fun getItemCount(): Int = addressListFiltered.size
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val charString = constraint?.toString() ?: ""
+
+                if (charString.isEmpty()) {
+                    addressListFiltered = addressList
+                } else {
+                    val filteredList = mutableListOf<LocalAddress>()
+                    addressList.filter {
+                        it.localName.contains(constraint!!) or it.postalCode.contains(
+                            constraint!!
+                        )
+                    }
+                        .forEach { filteredList.add(it) }
+                    addressListFiltered = filteredList
+                }
+                return FilterResults().apply { values = addressListFiltered }
             }
 
-            @SuppressLint("DiffUtilEquals")
-            override fun areContentsTheSame(oldItem: Address, newItem: Address): Boolean {
-                return newItem == oldItem
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                addressListFiltered = if (results?.values == null) {
+                    ArrayList()
+                } else {
+                    results.values as MutableList<LocalAddress>
+                }
+                notifyDataSetChanged()
             }
         }
     }

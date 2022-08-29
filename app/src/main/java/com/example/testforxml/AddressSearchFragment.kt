@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -17,6 +18,10 @@ import java.io.File
 
 class AddressSearchFragment : Fragment() {
 
+    private var transformedList: MutableList<LocalAddress> = mutableListOf()
+    private val localAddressAdapter by lazy {
+        AddressListAdapter()
+    }
     private var _binding: FragmentFirstBinding? = null
     private val binding get() = _binding!!
 
@@ -40,27 +45,34 @@ class AddressSearchFragment : Fragment() {
         } else {
             createAdapterAndShowList()
         }
+
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                localAddressAdapter.filter.filter(query)
+                return true
+            }
+
+            override fun onQueryTextChange(query: String?): Boolean {
+                localAddressAdapter.filter.filter(query)
+                return true
+            }
+        })
     }
 
-    private fun mapFileDataIntoObjectList(file: File): MutableList<Address> {
+    private fun mapFileDataIntoObjectList(file: File): MutableList<LocalAddress> {
         val readList = file.readLines()
-        val transformedList = mutableListOf<Address>()
+        transformedList = mutableListOf<LocalAddress>()
         for (line in readList) {
             val dataSelected = line.split(",")
             transformedList.add(
-                Address(
-                    dataSelected.last(),
-                    "${dataSelected.get(dataSelected.lastIndex - 2)}-${dataSelected.get(dataSelected.lastIndex - 1)}"
+                LocalAddress(
+                    dataSelected.last().toString().capitalizeAllWords(),
+                    "${dataSelected[dataSelected.lastIndex - 2]}-${dataSelected[dataSelected.lastIndex - 1]}"
                 )
             )
         }
         transformedList.removeAt(0)
         return transformedList
-    }
-
-    private fun deleteFile() {
-        requireContext().deleteFile(FILE_NAME)
-        Toast.makeText(requireContext(), "File deleted", Toast.LENGTH_SHORT).show()
     }
 
     private fun isAddressFilePresent(): Boolean {
@@ -101,9 +113,8 @@ class AddressSearchFragment : Fragment() {
     private fun createAdapterAndShowList() {
         val file = File(requireContext().filesDir, FILE_NAME)
         val addressList = mapFileDataIntoObjectList(file)
-        val addressAdapter = AddressListAdapter()
-        addressAdapter.submitList(addressList)
-        binding.rvAddressList.adapter = addressAdapter
+        localAddressAdapter.addData(addressList)
+        binding.rvAddressList.adapter = localAddressAdapter
     }
 
     override fun onDestroyView() {
