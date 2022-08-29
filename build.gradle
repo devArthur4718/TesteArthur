@@ -8,3 +8,17 @@ plugins {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext {
+    androidXCoreVersion = "1.7.0"
+    appCompatVersion = "1.5.0"
+    googleMaterialVersion = "1.6.1"
+    constraintLayoutVersion = "2.1.4"
+    fragmentKtxVersion = "2.5.1"
+    navagitionUiKtxVersion = "2.5.1"
+    retrofitVersion = "2.9.0"
+    retrofitGsonConverterVersion  = "2.9.0"
+    junitVersion = "4.13.2"
+    androixTestExtVersion = "1.1.3"
+    androidXtestExpressoVersion = "3.4.0"
+}
