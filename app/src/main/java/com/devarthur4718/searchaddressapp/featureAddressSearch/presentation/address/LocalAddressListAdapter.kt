@@ -56,7 +56,7 @@ open class LocalAddressListAdapter :
                             constraint!!,
                             ignoreCase = true
                         ) or it.postalCode.contains(
-                            constraint!!
+                            constraint
                         )
                     }
                         .forEach { filteredList.add(it) }
