@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.model.LocalAddress
+import com.devarthur4718.searchaddressapp.featureAddressSearch.data.local.entity.LocalAddress
 import kotlinx.coroutines.flow.Flow
 
 @Dao

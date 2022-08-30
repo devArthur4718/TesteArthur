@@ -1,4 +1,4 @@
-package com.devarthur4718.searchaddressapp.featureAddressSearch.domain.model
+package com.devarthur4718.searchaddressapp.featureAddressSearch.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

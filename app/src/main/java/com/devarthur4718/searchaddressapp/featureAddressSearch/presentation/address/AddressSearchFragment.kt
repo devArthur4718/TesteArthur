@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.devarthur4718.searchaddressapp.capitalizeAllWords
 import com.devarthur4718.searchaddressapp.databinding.FragmentSearchAddressBinding
-import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.model.LocalAddress
+import com.devarthur4718.searchaddressapp.featureAddressSearch.data.local.entity.LocalAddress
 import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.ResponseBody
 import java.io.File
@@ -66,9 +66,7 @@ class AddressSearchFragment : Fragment() {
             }
         })
 
-        if (!isAddressFilePresent()) {
-            viewModel.getAddressFromRemoteAndSaveLocally()
-        }
+        viewModel.getAddressFromRemoteAndSaveLocally()
     }
 
     private fun showProgress() {

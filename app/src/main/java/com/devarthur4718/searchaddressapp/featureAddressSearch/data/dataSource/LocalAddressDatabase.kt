@@ -2,7 +2,7 @@ package com.devarthur4718.searchaddressapp.featureAddressSearch.data.dataSource
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.model.LocalAddress
+import com.devarthur4718.searchaddressapp.featureAddressSearch.data.local.entity.LocalAddress
 
 @Database(
     entities = [LocalAddress::class],
