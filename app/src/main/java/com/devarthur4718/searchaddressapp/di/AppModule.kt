@@ -5,8 +5,8 @@ import androidx.room.Room
 import com.devarthur4718.searchaddressapp.BuildConfig
 import com.devarthur4718.searchaddressapp.featureAddressSearch.data.local.LocalAddressDatabase
 import com.devarthur4718.searchaddressapp.featureAddressSearch.data.remote.GitHubApi
-import com.devarthur4718.searchaddressapp.featureAddressSearch.data.repository.RemoteAddressRepositoryImpl
-import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.repository.RemoteAddressRepository
+import com.devarthur4718.searchaddressapp.featureAddressSearch.data.repository.AddressRepositoryImpl
+import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.repository.AddressRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,8 +34,8 @@ object AppModule {
     fun provideAddressRepository(
         api: GitHubApi,
         db: LocalAddressDatabase
-    ): RemoteAddressRepository {
-        return RemoteAddressRepositoryImpl(api, db.dao)
+    ): AddressRepository {
+        return AddressRepositoryImpl(api, db.dao)
     }
 
     @Provides

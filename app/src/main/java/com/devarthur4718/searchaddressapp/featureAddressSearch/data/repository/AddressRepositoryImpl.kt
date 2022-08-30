@@ -3,14 +3,14 @@ package com.devarthur4718.searchaddressapp.featureAddressSearch.data.repository
 import com.devarthur4718.searchaddressapp.featureAddressSearch.data.local.LocalAddressDao
 import com.devarthur4718.searchaddressapp.featureAddressSearch.data.local.entity.LocalAddress
 import com.devarthur4718.searchaddressapp.featureAddressSearch.data.remote.GitHubApi
-import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.repository.RemoteAddressRepository
+import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.repository.AddressRepository
 import okhttp3.ResponseBody
 import javax.inject.Inject
 
-class RemoteAddressRepositoryImpl @Inject constructor(
+class AddressRepositoryImpl @Inject constructor(
     private val api: GitHubApi,
     private val dao: LocalAddressDao
-) : RemoteAddressRepository {
+) : AddressRepository {
 
     override suspend fun getAddressesFromApi(): ResponseBody {
         return api.getPostalCodes()

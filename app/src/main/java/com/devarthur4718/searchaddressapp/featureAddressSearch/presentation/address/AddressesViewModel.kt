@@ -7,7 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.devarthur4718.searchaddressapp.core.Resource
 import com.devarthur4718.searchaddressapp.core.StandardErrorMessages
 import com.devarthur4718.searchaddressapp.featureAddressSearch.data.local.entity.LocalAddress
-import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.useCase.GetRemoteAddressesUseCase
+import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.useCase.GetAddressesFileUseCase
+import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.useCase.SaveDataIntoRoomUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -15,14 +16,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddressesViewModel @Inject constructor(
-    private val remoteAddressesUseCase: GetRemoteAddressesUseCase
+    private val getAddressesFileUseCase: GetAddressesFileUseCase,
+    private val saveDataIntoRoomUseCase: SaveDataIntoRoomUseCase
 ) : ViewModel() {
 
     private val _addressesState = MutableLiveData<AddressState>()
     fun addressesState(): LiveData<AddressState> = _addressesState
 
     fun getAddressFromRemoteAndSaveLocally() {
-        remoteAddressesUseCase().onEach { result ->
+        getAddressesFileUseCase().onEach { result ->
             when (result) {
                 is Resource.Loading -> {
                     _addressesState.postValue(AddressState.Loading)
@@ -48,7 +50,7 @@ class AddressesViewModel @Inject constructor(
     }
 
     fun handleAddressesFileIntoDatabase(addressList: MutableList<LocalAddress>) {
-        remoteAddressesUseCase.saveDataIntoDatabase(addressList).onEach { result ->
+        saveDataIntoRoomUseCase.saveDataIntoDatabase(addressList).onEach { result ->
             when (result) {
                 is Resource.Loading -> {
                     _addressesState.postValue(AddressState.Loading)
@@ -68,7 +70,7 @@ class AddressesViewModel @Inject constructor(
     }
 
     fun getDataFromLocal() {
-        remoteAddressesUseCase.getDataFromDatabase().onEach { result ->
+        getAddressesFileUseCase.getDataFromDatabase().onEach { result ->
             when (result) {
                 is Resource.Loading -> {
                     _addressesState.postValue(AddressState.Loading)
