@@ -7,4 +7,5 @@ interface AddressRepository {
     suspend fun getAddressesFromApi(): ResponseBody
     suspend fun getAddressesFromLocalDatabase(): List<LocalAddress>
     suspend fun saveAddresses(list: List<LocalAddress>)
+    suspend fun searchForAddress(queryString: String): List<LocalAddress>
 }

@@ -17,7 +17,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class AddressSearchFragment : Fragment() {
 
     private val localAddressAdapter by lazy {
-        LocalAddressListAdapter()
+        AddressListAdapter()
     }
     private var _binding: FragmentSearchAddressBinding? = null
     private val binding get() = _binding!!
@@ -49,8 +49,14 @@ class AddressSearchFragment : Fragment() {
                 }
                 is AddressState.OnAddressesFetchedFromLocal -> {
                     hideProgress()
-                    localAddressAdapter.addData(state.list as MutableList<LocalAddress>)
+                    localAddressAdapter.submitList(state.list)
                     binding.rvAddressList.adapter = localAddressAdapter
+                }
+                is AddressState.OnQueryFinished -> {
+                    hideProgress()
+                    val newAdapter = AddressListAdapter()
+                    binding.rvAddressList.adapter = newAdapter
+                    newAdapter.submitList(state.querryList)
                 }
                 is AddressState.Error -> {
                     hideProgress()
@@ -61,12 +67,12 @@ class AddressSearchFragment : Fragment() {
 
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                localAddressAdapter.filter.filter(query)
+                query?.let { viewModel.searchAddress(it) }
                 return true
             }
 
             override fun onQueryTextChange(query: String?): Boolean {
-                localAddressAdapter.filter.filter(query)
+                query?.let { viewModel.searchAddress(it) }
                 return true
             }
         })

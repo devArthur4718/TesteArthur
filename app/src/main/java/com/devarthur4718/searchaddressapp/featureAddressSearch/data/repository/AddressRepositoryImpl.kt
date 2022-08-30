@@ -23,4 +23,8 @@ class AddressRepositoryImpl @Inject constructor(
     override suspend fun saveAddresses(list: List<LocalAddress>) {
         return dao.insertAddress(list)
     }
+
+    override suspend fun searchForAddress(queryString: String): List<LocalAddress> {
+        return dao.searchAddress(queryString.toUpperCase())
+    }
 }

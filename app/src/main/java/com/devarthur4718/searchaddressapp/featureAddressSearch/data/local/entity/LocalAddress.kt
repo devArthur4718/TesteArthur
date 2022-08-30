@@ -5,15 +5,16 @@ import android.util.Log
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.devarthur4718.searchaddressapp.capitalizeAllWords
+import com.devarthur4718.searchaddressapp.unaccent
 import okhttp3.ResponseBody
 import java.io.File
 
 @Entity
 class LocalAddress(
+    var fullAddress: String = "",
     val localName: String,
-    val postalCode: String,
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0
+    @PrimaryKey
+    val postalCode: String
 ) {
 
     companion object {
@@ -38,8 +39,9 @@ class LocalAddress(
                 val dataSelected = line.split(",")
                 transformedList.add(
                     LocalAddress(
+                        "${dataSelected[dataSelected.lastIndex - 2]}-${dataSelected[dataSelected.lastIndex - 1]} ${dataSelected.last().unaccent()}",
                         dataSelected.last().toString().capitalizeAllWords(),
-                        "${dataSelected[dataSelected.lastIndex - 2]}-${dataSelected[dataSelected.lastIndex - 1]}"
+                        "${dataSelected[dataSelected.lastIndex - 2]}-${dataSelected[dataSelected.lastIndex - 1]}",
                     )
                 )
             }

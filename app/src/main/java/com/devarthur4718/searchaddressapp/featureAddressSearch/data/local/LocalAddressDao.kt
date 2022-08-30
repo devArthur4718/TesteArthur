@@ -15,8 +15,8 @@ interface LocalAddressDao {
     @Query("DELETE FROM LocalAddress")
     suspend fun deleteAllAddress()
 
-    @Query("SELECT * FROM LocalAddress WHERE localName LIKE :searchQuery or postalCode LIKE :searchQuery")
-    fun searchAddress(searchQuery: String): List<LocalAddress>
+    @Query("SELECT * FROM LocalAddress WHERE fullAddress GLOB '*' || :searchQuery || '*' OR fullAddress GLOB '*' || :searchQuery || '*' OR fullAddress  GLOB :searchQuery || '*' OR fullAddress  GLOB '*' || :searchQuery || '*' ")
+    suspend fun searchAddress(searchQuery: String?): List<LocalAddress>
 
     @Query("SELECT * FROM LocalAddress")
     suspend fun getAllAddressFromRemote(): List<LocalAddress>
