@@ -9,6 +9,7 @@ import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.useCase.Ge
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -43,5 +44,9 @@ class AddressesViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+    fun handleFormatedFile(file: File) {
+        remoteAddressesUseCase.createListFromFile()
     }
 }

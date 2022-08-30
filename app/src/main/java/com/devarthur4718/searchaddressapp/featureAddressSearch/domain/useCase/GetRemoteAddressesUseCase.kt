@@ -24,4 +24,7 @@ class GetRemoteAddressesUseCase @Inject constructor(
             emit(Resource.Error(StandardErrorMessages.NO_NETWORK_ERROR))
         }
     }
+
+    fun createListFromFile() {
+    }
 }

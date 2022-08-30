@@ -1,6 +1,5 @@
 package com.devarthur4718.searchaddressapp.featureAddressSearch.presentation.address
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,8 +12,8 @@ import androidx.fragment.app.viewModels
 import com.devarthur4718.searchaddressapp.capitalizeAllWords
 import com.devarthur4718.searchaddressapp.databinding.FragmentSearchAddressBinding
 import com.devarthur4718.searchaddressapp.featureAddressSearch.data.local.entity.LocalAddress
+import com.devarthur4718.searchaddressapp.featureAddressSearch.data.local.entity.LocalAddress.Companion.FILE_NAME
 import dagger.hilt.android.AndroidEntryPoint
-import okhttp3.ResponseBody
 import java.io.File
 
 @AndroidEntryPoint
@@ -45,7 +44,9 @@ class AddressSearchFragment : Fragment() {
                 is AddressState.Loading -> showProgress()
                 is AddressState.onRemoteAddressFileReceived -> {
                     hideProgress()
-                    saveFileToDisk(state.data)
+//                    saveFileToDisk(state.data)
+                    LocalAddress.saveFile(requireContext(), state.data)
+                    createAdapterAndShowList()
                 }
                 is AddressState.Error -> {
                     hideProgress()
@@ -93,20 +94,8 @@ class AddressSearchFragment : Fragment() {
         return transformedList
     }
 
-    private fun isAddressFilePresent(): Boolean {
-        return requireContext().fileList().contains(FILE_NAME)
-    }
-
-    private fun saveFileToDisk(body: ResponseBody) {
-        requireContext().openFileOutput(FILE_NAME, Context.MODE_PRIVATE).use {
-            it.write(body.bytes())
-        }
-        createAdapterAndShowList()
-    }
-
     private fun createAdapterAndShowList() {
-        val file = File(requireContext().filesDir, FILE_NAME)
-        val addressList = mapFileDataIntoObjectList(file)
+        val addressList = LocalAddress.mapFileDataIntoObjectList(requireContext())
         localAddressAdapter.addData(addressList)
         binding.rvAddressList.adapter = localAddressAdapter
     }
@@ -118,6 +107,5 @@ class AddressSearchFragment : Fragment() {
 
     companion object {
         const val REQUEST_CODE_WRITE_EXTERNAL = 1
-        const val FILE_NAME = "postalCodeFile"
     }
 }

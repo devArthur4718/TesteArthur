@@ -1,4 +1,4 @@
-package com.devarthur4718.searchaddressapp.featureAddressSearch.data.dataSource
+package com.devarthur4718.searchaddressapp.featureAddressSearch.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
@@ -6,12 +6,8 @@ import com.devarthur4718.searchaddressapp.featureAddressSearch.data.local.entity
 
 @Database(
     entities = [LocalAddress::class],
-    version = 2
+    version = 4
 )
 abstract class LocalAddressDatabase : RoomDatabase() {
-    abstract val localAddressDao: LocalAddressDao
-
-    companion object {
-        const val DATABASE_NAME = "address_db"
-    }
+    abstract val dao: LocalAddressDao
 }

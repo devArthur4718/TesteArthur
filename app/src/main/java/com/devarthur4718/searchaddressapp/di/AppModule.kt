@@ -1,9 +1,12 @@
 package com.devarthur4718.searchaddressapp.di
 
+import android.app.Application
+import androidx.room.Room
 import com.devarthur4718.searchaddressapp.BuildConfig
+import com.devarthur4718.searchaddressapp.featureAddressSearch.data.local.LocalAddressDatabase
 import com.devarthur4718.searchaddressapp.featureAddressSearch.data.remote.GitHubApi
-import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.repository.RemoteAddressRepository
 import com.devarthur4718.searchaddressapp.featureAddressSearch.data.repository.RemoteAddressRepositoryImpl
+import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.repository.RemoteAddressRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,22 +18,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
-//    @Provides
-//    @Singleton
-//    fun provideAddressDatabase(app: Application): LocalAddressDatabase {
-//        return Room.databaseBuilder(
-//            app,
-//            LocalAddressDatabase::class.java,
-//            LocalAddressDatabase.DATABASE_NAME
-//        ).build()
-//    }
-//
-//    @Provides
-//    @Singleton
-//    fun provideAddressRepository(db: LocalAddressDatabase): LocalAddressRepository {
-//        return LocalAddressRepositoryImpl(db.localAddressDao)
-//    }
 
     @Provides
     @Singleton
@@ -44,7 +31,20 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideGitHubRepository(api: GitHubApi): RemoteAddressRepository {
-        return RemoteAddressRepositoryImpl(api)
+    fun provideAddressRepository(
+        api: GitHubApi,
+        db: LocalAddressDatabase
+    ): RemoteAddressRepository {
+        return RemoteAddressRepositoryImpl(api, db.dao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAddressDatabase(app: Application): LocalAddressDatabase {
+        return Room.databaseBuilder(
+            app,
+            LocalAddressDatabase::class.java,
+            "address_db"
+        ).build()
     }
 }
