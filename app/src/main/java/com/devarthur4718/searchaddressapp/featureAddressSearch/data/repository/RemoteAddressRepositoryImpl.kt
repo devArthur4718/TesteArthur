@@ -16,7 +16,11 @@ class RemoteAddressRepositoryImpl @Inject constructor(
         return api.getPostalCodes()
     }
 
+    override suspend fun getAddressesFromLocalDatabase(): List<LocalAddress> {
+        return dao.getAllAddressFromRemote()
+    }
+
     override suspend fun saveAddresses(list: List<LocalAddress>) {
-        dao.insertAddress(list)
+        return dao.insertAddress(list)
     }
 }

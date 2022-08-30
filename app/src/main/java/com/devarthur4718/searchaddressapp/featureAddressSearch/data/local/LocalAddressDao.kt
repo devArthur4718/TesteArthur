@@ -1,6 +1,9 @@
 package com.devarthur4718.searchaddressapp.featureAddressSearch.data.local
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.devarthur4718.searchaddressapp.featureAddressSearch.data.local.entity.LocalAddress
 
 @Dao
@@ -14,4 +17,7 @@ interface LocalAddressDao {
 
     @Query("SELECT * FROM LocalAddress WHERE localName LIKE :searchQuery or postalCode LIKE :searchQuery")
     fun searchAddress(searchQuery: String): List<LocalAddress>
+
+    @Query("SELECT * FROM LocalAddress")
+    suspend fun getAllAddressFromRemote(): List<LocalAddress>
 }

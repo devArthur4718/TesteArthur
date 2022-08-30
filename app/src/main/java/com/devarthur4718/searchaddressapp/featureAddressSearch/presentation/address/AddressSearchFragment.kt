@@ -38,10 +38,19 @@ class AddressSearchFragment : Fragment() {
             if (state == null) return@observe
             when (state) {
                 is AddressState.Loading -> showProgress()
-                is AddressState.onRemoteAddressFileReceived -> {
+                is AddressState.OnRemoteAddressFileReceived -> {
                     hideProgress()
                     LocalAddress.saveFile(requireContext(), state.data)
                     createAdapterAndShowList()
+                }
+                is AddressState.OnDataSaved -> {
+                    hideProgress()
+                    viewModel.getDataFromLocal()
+                }
+                is AddressState.OnAddressesFetchedFromLocal -> {
+                    hideProgress()
+                    localAddressAdapter.addData(state.list as MutableList<LocalAddress>)
+                    binding.rvAddressList.adapter = localAddressAdapter
                 }
                 is AddressState.Error -> {
                     hideProgress()
@@ -75,8 +84,7 @@ class AddressSearchFragment : Fragment() {
 
     private fun createAdapterAndShowList() {
         val addressList = LocalAddress.mapFileDataIntoObjectList(requireContext())
-        localAddressAdapter.addData(addressList)
-        binding.rvAddressList.adapter = localAddressAdapter
+        viewModel.handleAddressesFileIntoDatabase(addressList)
     }
 
     override fun onDestroyView() {

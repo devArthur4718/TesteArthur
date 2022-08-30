@@ -5,5 +5,6 @@ import okhttp3.ResponseBody
 
 interface RemoteAddressRepository {
     suspend fun getAddressesFromApi(): ResponseBody
+    suspend fun getAddressesFromLocalDatabase(): List<LocalAddress>
     suspend fun saveAddresses(list: List<LocalAddress>)
 }
