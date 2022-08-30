@@ -6,7 +6,7 @@ import com.devarthur4718.searchaddressapp.featureAddressSearch.data.local.entity
 
 @Database(
     entities = [LocalAddress::class],
-    version = 4
+    version = 6
 )
 abstract class LocalAddressDatabase : RoomDatabase() {
     abstract val dao: LocalAddressDao
