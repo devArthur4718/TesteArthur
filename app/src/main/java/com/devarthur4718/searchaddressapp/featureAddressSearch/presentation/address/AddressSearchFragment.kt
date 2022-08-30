@@ -9,17 +9,13 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.devarthur4718.searchaddressapp.capitalizeAllWords
 import com.devarthur4718.searchaddressapp.databinding.FragmentSearchAddressBinding
 import com.devarthur4718.searchaddressapp.featureAddressSearch.data.local.entity.LocalAddress
-import com.devarthur4718.searchaddressapp.featureAddressSearch.data.local.entity.LocalAddress.Companion.FILE_NAME
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.File
 
 @AndroidEntryPoint
 class AddressSearchFragment : Fragment() {
 
-    private var transformedList: MutableList<LocalAddress> = mutableListOf()
     private val localAddressAdapter by lazy {
         LocalAddressListAdapter()
     }
@@ -44,7 +40,6 @@ class AddressSearchFragment : Fragment() {
                 is AddressState.Loading -> showProgress()
                 is AddressState.onRemoteAddressFileReceived -> {
                     hideProgress()
-//                    saveFileToDisk(state.data)
                     LocalAddress.saveFile(requireContext(), state.data)
                     createAdapterAndShowList()
                 }
@@ -76,22 +71,6 @@ class AddressSearchFragment : Fragment() {
 
     private fun hideProgress() {
         binding.progressBar.isVisible = false
-    }
-
-    private fun mapFileDataIntoObjectList(file: File): MutableList<LocalAddress> {
-        val readList = file.readLines()
-        transformedList = mutableListOf()
-        for (line in readList) {
-            val dataSelected = line.split(",")
-            transformedList.add(
-                LocalAddress(
-                    dataSelected.last().toString().capitalizeAllWords(),
-                    "${dataSelected[dataSelected.lastIndex - 2]}-${dataSelected[dataSelected.lastIndex - 1]}"
-                )
-            )
-        }
-        transformedList.removeAt(0)
-        return transformedList
     }
 
     private fun createAdapterAndShowList() {
