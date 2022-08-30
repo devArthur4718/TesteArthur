@@ -1,6 +1,5 @@
 package com.devarthur4718.searchaddressapp.featureAddressSearch.presentation.address
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,17 +9,13 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.devarthur4718.searchaddressapp.capitalizeAllWords
 import com.devarthur4718.searchaddressapp.databinding.FragmentSearchAddressBinding
-import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.model.LocalAddress
+import com.devarthur4718.searchaddressapp.featureAddressSearch.data.local.entity.LocalAddress
 import dagger.hilt.android.AndroidEntryPoint
-import okhttp3.ResponseBody
-import java.io.File
 
 @AndroidEntryPoint
 class AddressSearchFragment : Fragment() {
 
-    private var transformedList: MutableList<LocalAddress> = mutableListOf()
     private val localAddressAdapter by lazy {
         LocalAddressListAdapter()
     }
@@ -43,9 +38,19 @@ class AddressSearchFragment : Fragment() {
             if (state == null) return@observe
             when (state) {
                 is AddressState.Loading -> showProgress()
-                is AddressState.onRemoteAddressFileReceived -> {
+                is AddressState.OnRemoteAddressFileReceived -> {
                     hideProgress()
-                    saveFileToDisk(state.data)
+                    LocalAddress.saveFile(requireContext(), state.data)
+                    createAdapterAndShowList()
+                }
+                is AddressState.OnDataSaved -> {
+                    hideProgress()
+                    viewModel.getDataFromLocal()
+                }
+                is AddressState.OnAddressesFetchedFromLocal -> {
+                    hideProgress()
+                    localAddressAdapter.addData(state.list as MutableList<LocalAddress>)
+                    binding.rvAddressList.adapter = localAddressAdapter
                 }
                 is AddressState.Error -> {
                     hideProgress()
@@ -66,9 +71,7 @@ class AddressSearchFragment : Fragment() {
             }
         })
 
-        if (!isAddressFilePresent()) {
-            viewModel.getAddressFromRemoteAndSaveLocally()
-        }
+        viewModel.getAddressFromRemoteAndSaveLocally()
     }
 
     private fun showProgress() {
@@ -79,38 +82,9 @@ class AddressSearchFragment : Fragment() {
         binding.progressBar.isVisible = false
     }
 
-    private fun mapFileDataIntoObjectList(file: File): MutableList<LocalAddress> {
-        val readList = file.readLines()
-        transformedList = mutableListOf()
-        for (line in readList) {
-            val dataSelected = line.split(",")
-            transformedList.add(
-                LocalAddress(
-                    dataSelected.last().toString().capitalizeAllWords(),
-                    "${dataSelected[dataSelected.lastIndex - 2]}-${dataSelected[dataSelected.lastIndex - 1]}"
-                )
-            )
-        }
-        transformedList.removeAt(0)
-        return transformedList
-    }
-
-    private fun isAddressFilePresent(): Boolean {
-        return requireContext().fileList().contains(FILE_NAME)
-    }
-
-    private fun saveFileToDisk(body: ResponseBody) {
-        requireContext().openFileOutput(FILE_NAME, Context.MODE_PRIVATE).use {
-            it.write(body.bytes())
-        }
-        createAdapterAndShowList()
-    }
-
     private fun createAdapterAndShowList() {
-        val file = File(requireContext().filesDir, FILE_NAME)
-        val addressList = mapFileDataIntoObjectList(file)
-        localAddressAdapter.addData(addressList)
-        binding.rvAddressList.adapter = localAddressAdapter
+        val addressList = LocalAddress.mapFileDataIntoObjectList(requireContext())
+        viewModel.handleAddressesFileIntoDatabase(addressList)
     }
 
     override fun onDestroyView() {
@@ -120,6 +94,5 @@ class AddressSearchFragment : Fragment() {
 
     companion object {
         const val REQUEST_CODE_WRITE_EXTERNAL = 1
-        const val FILE_NAME = "postalCodeFile"
     }
 }

@@ -6,7 +6,7 @@ import android.widget.Filter
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.devarthur4718.searchaddressapp.databinding.ItemAddressBinding
-import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.model.LocalAddress
+import com.devarthur4718.searchaddressapp.featureAddressSearch.data.local.entity.LocalAddress
 import com.devarthur4718.searchaddressapp.unaccent
 
 open class LocalAddressListAdapter :
