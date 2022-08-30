@@ -11,10 +11,10 @@ import kotlinx.coroutines.flow.Flow
 interface LocalAddressDao {
 
     @Query("SELECT * FROM LocalAddress")
-    fun getAllAddress(): Flow<List<LocalAddress>>
+    suspend fun getAllAddress(): Flow<List<LocalAddress>>
 
     @Query("SELECT * FROM LocalAddress WHERE localName LIKE :searchQuery or postalCode LIKE :searchQuery")
-    fun searchAddress(searchQuery: String): Flow<List<LocalAddress>>
+    suspend fun searchAddress(searchQuery: String): List<LocalAddress>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertData(address: LocalAddress)
