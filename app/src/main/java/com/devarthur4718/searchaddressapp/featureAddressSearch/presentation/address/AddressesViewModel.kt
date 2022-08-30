@@ -7,8 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.devarthur4718.searchaddressapp.core.Resource
 import com.devarthur4718.searchaddressapp.core.StandardErrorMessages
 import com.devarthur4718.searchaddressapp.featureAddressSearch.data.local.entity.LocalAddress
-import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.useCase.GetAddressesFileUseCase
-import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.useCase.SaveDataIntoRoomUseCase
+import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.useCase.DownloadCSVFileFromRemoteServer
+import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.useCase.GetDataFromLocalStorage
+import com.devarthur4718.searchaddressapp.featureAddressSearch.domain.useCase.SaveDataIntoLocalStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -16,15 +17,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddressesViewModel @Inject constructor(
-    private val getAddressesFileUseCase: GetAddressesFileUseCase,
-    private val saveDataIntoRoomUseCase: SaveDataIntoRoomUseCase
+    private val downloadCSVFileFromRemoteServer: DownloadCSVFileFromRemoteServer,
+    private val saveDataIntoLocalStore: SaveDataIntoLocalStore,
+    private val getDataFromLocalStorage: GetDataFromLocalStorage
 ) : ViewModel() {
 
     private val _addressesState = MutableLiveData<AddressState>()
     fun addressesState(): LiveData<AddressState> = _addressesState
 
     fun getAddressFromRemoteAndSaveLocally() {
-        getAddressesFileUseCase().onEach { result ->
+        downloadCSVFileFromRemoteServer().onEach { result ->
             when (result) {
                 is Resource.Loading -> {
                     _addressesState.postValue(AddressState.Loading)
@@ -50,7 +52,7 @@ class AddressesViewModel @Inject constructor(
     }
 
     fun handleAddressesFileIntoDatabase(addressList: MutableList<LocalAddress>) {
-        saveDataIntoRoomUseCase.saveDataIntoDatabase(addressList).onEach { result ->
+        saveDataIntoLocalStore(addressList).onEach { result ->
             when (result) {
                 is Resource.Loading -> {
                     _addressesState.postValue(AddressState.Loading)
@@ -70,7 +72,7 @@ class AddressesViewModel @Inject constructor(
     }
 
     fun getDataFromLocal() {
-        getAddressesFileUseCase.getDataFromDatabase().onEach { result ->
+        getDataFromLocalStorage().onEach { result ->
             when (result) {
                 is Resource.Loading -> {
                     _addressesState.postValue(AddressState.Loading)

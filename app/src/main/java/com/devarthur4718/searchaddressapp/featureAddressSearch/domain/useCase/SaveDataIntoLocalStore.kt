@@ -8,10 +8,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class SaveDataIntoRoomUseCase @Inject constructor(
+class SaveDataIntoLocalStore @Inject constructor(
     private val remoteApi: AddressRepository
 ) {
-    fun saveDataIntoDatabase(addressList: MutableList<LocalAddress>): Flow<Resource<Unit>> = flow {
+    operator fun invoke(addressList: MutableList<LocalAddress>): Flow<Resource<Unit>> = flow {
         try {
             emit(Resource.Loading())
             remoteApi.saveAddresses(addressList)
